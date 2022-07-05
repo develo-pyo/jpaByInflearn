@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)   //JOINED, SINGLE_TABLE:한곳에여러개넣기, TABLE_PER_CLASS
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)   //JOINED, SINGLE_TABLE:한곳에여러개넣기(default), TABLE_PER_CLASS
 @DiscriminatorColumn(name="dtype")
 @Getter @Setter
 public abstract class Item {
