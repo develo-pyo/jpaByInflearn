@@ -27,7 +27,7 @@ public class MemberService {
     /**
     * 회원 가입
     */
-    @Transactional  //메소드에 붙은 Transactional 우선(class에 붙은 Transactional의 presequence가 메소드 다음)
+    @Transactional  //메소드에 붙은 Transactional 이 class에 붙은 Transactional 오버라이딩하므로 우선적용됨
     public Long join(Member member){
         validateDuplicateMember(member);
         memberRepository.save(member);
