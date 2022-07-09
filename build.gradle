@@ -22,7 +22,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-devtools' //톰캣 자동 리로딩
+	implementation 'org.springframework.boot:spring-boot-devtools' //톰캣 자동 리로딩 (cmd + shift + F9 : 컴파일)
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0' //print sql binding
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
