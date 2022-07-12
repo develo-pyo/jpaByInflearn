@@ -17,6 +17,9 @@ public class ItemRepository {
             em.persist(item);
         } else {
             em.merge(item);
+            //Item item = em.merge(item); 에서 Item item 과 em.merge(item) 의 item 은 다른 객체.
+            //좌측의 item 은 JPA 에서 관리되는 영속 엔티티
+            //우측의 item 은 준영속 엔티티(JPA에서 관리되지 않아 setter 사용 후 transaction 에 의해 자동 commit 불가)
         }
     }
 

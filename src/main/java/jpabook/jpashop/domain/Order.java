@@ -15,7 +15,8 @@ import static javax.persistence.FetchType.*;
 @Entity
 @Table(name = "orders")
 @Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  //파라미터가 없는 생성자 자동생성(protected 로 생성)
+                                                    //https://cobbybb.tistory.com/14
 public class Order {
 
     @Id @GeneratedValue
