@@ -8,13 +8,18 @@ import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.repository.ItemRepository;
 import jpabook.jpashop.repository.MemberRepository;
 import jpabook.jpashop.repository.OrderRepository;
+import jpabook.jpashop.repository.OrderSearch;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -60,9 +65,23 @@ public class OrderService {
     }
 
     //검색
-//    public List<Order> findOrder(OrderSearch orderSearch){
-//        return orderRepository.findAll(orderSearch);
-//    }
+    public List<Order> findOrders(OrderSearch orderSearch){
+        return orderRepository.findAllByString(orderSearch);
+    }
 
+
+    // logging test
+//    public static void testLog(){
+//        MDC.put("discr", "TYP1");
+//        //log.
+//        log.trace("test trace");
+//        log.debug("test debug");
+//        log.info("test info");
+//        log.warn("test warn");
+//        log.error("test error");
+//
+//        MDC.put("discr", "TYP2");
+//        log.error("test error222");
+//    }
 
 }

@@ -17,3 +17,4 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+    #jpabook.jpashop.service.OrderService: error

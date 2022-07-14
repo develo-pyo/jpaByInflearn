@@ -41,7 +41,7 @@ public class OrderRepository {
     /**
      * 1. 문자열 처리를 통한 query. 실무에서 사용하지 않음. 실무에선 QueryDSL 사용 혹은 Mybatis 사용
      * */
-    public List<Order> findAll(OrderSearch orderSearch){
+    public List<Order> findAllByString(OrderSearch orderSearch){
         String jpql = "select o from Order o join o.member m";
         boolean isFirstCondition = true;
 

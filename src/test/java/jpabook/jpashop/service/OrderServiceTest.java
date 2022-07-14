@@ -88,7 +88,6 @@ class OrderServiceTest {
             orderService.order(member.getId(), item.getId(), orderCount);
         }, "재고 수량 초과로 재고수량초과 예외를 던져야한다."
         );
-
     }
     
     @Test
@@ -109,5 +108,11 @@ class OrderServiceTest {
         Assertions.assertEquals(getOrder.getStatus(), OrderStatus.CANCEL, "주문취소시 주문상태는 취소여야한다");
         Assertions.assertEquals(10, item.getStockQuantity(), "주문취소시 재고는 원복되어야 한다");
    }
+
+   @Test
+   public void testLogging() throws Exception {
+       orderService.testLog();
+   }
+
 
 }

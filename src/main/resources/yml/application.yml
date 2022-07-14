@@ -15,5 +15,7 @@ spring:
 
 logging:
   level:
+    root: ERROR
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+
