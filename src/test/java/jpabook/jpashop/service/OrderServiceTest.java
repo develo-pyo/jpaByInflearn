@@ -109,10 +109,10 @@ class OrderServiceTest {
         Assertions.assertEquals(10, item.getStockQuantity(), "주문취소시 재고는 원복되어야 한다");
    }
 
-   @Test
-   public void testLogging() throws Exception {
-       orderService.testLog();
-   }
+//   @Test
+//   public void testLogging() throws Exception {
+//       orderService.testLog();
+//   }
 
 
 }
