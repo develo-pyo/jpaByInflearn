@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}[%-5level] : %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="TST" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}[%-5level]---%msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <key>discr</key>
+            <defaultValue>type</defaultValue>
+        </discriminator>
+        <sift>
+
+            <appender name="FILE-${discr}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>/${discr}.log</file>
+                <layout class="ch.qos.logback.classic.PatternLayout">
+                    <Pattern>%d [%thread] %level %mdc %logger{35} SIFT--- %msg%n</Pattern>
+                </layout>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <fileNamePattern>/${discr}_%d{yyyy-MM-dd-HH-mm}.%i.log</fileNamePattern>
+                </rollingPolicy>
+            </appender>
+<!--
+            <appender name="FILE-${discr}" class="ch.qos.logback.core.FileAppender">
+                <file>/${discr}.log</file>
+                <layout class="ch.qos.logback.classic.PatternLayout">
+                    <pattern>%d [%thread] %level %mdc %logger{35} SIFT- %msg%n</pattern>
+                </layout>
+            </appender>
+            -->
+        </sift>
+    </appender>
+
+
+    <logger name="jpabook.jpashop.service.OrderService" level="error" additivity="false">
+        <!--<appender-ref ref="TST"/>-->
+        <appender-ref ref="SIFT"/>
+    </logger>
+
+    <root level="debug">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+
+</configuration>
