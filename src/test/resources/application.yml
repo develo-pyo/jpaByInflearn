@@ -1,4 +1,4 @@
-spring:
+#spring:
 #  datasource:
 #    url: jdbc:h2:mem:test;  #테스트 에선 inmemory 방식으로 로딩(spring boot 에선 별도 설정이 없으면 inmemory 방식 사용(default)
 #    username: sa
