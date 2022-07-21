@@ -25,7 +25,7 @@ public class Order {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private Member member; // = new proxy member(); 를 넣어둠 (org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterCeptor)
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();

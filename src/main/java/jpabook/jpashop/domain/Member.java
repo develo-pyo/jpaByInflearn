@@ -1,5 +1,6 @@
 package jpabook.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +24,7 @@ public class Member {
     private Address address;
 
     //@JsonIgnore //의도치 않은 Entity 내의 Getter 는 @JsonIgnore 어노테이션을 멤버변수에 붙여 반환되지 않도록 설정이 가능
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
 
