@@ -50,6 +50,33 @@ public class OrderApiController {
         return collect;
     }
 
+    //페치조인 최적화
+    //distinct 의 사용
+    //* fetch join 사용시 페이징 처리 불가
+    @GetMapping("/api/v3/orders")
+    public List<OrderDto> ordersV3(){
+        List<Order> orders = orderRepository.findAllWithItem();
+
+        for (Order order : orders) {
+            System.out.println("order ref=" + order + " id=" + order.getId());
+            //상기 수행시 하기 결과가 나옴. 동일한 orderId 끼린 ref 값까지 동일. (join 으로 인해 카디션 곱만큼 결과가 나옴)
+            //distinct 키워드를 통해 해결
+            //* query 에 distinct 가 붙어서 수행됨 + entity 중복시 제거
+            //order ref=jpabook.jpashop.domain.Order@7689b944 id=4
+            //order ref=jpabook.jpashop.domain.Order@7689b944 id=4
+            //order ref=jpabook.jpashop.domain.Order@5075a4c2 id=11
+            //order ref=jpabook.jpashop.domain.Order@5075a4c2 id=11
+        }
+
+        List<OrderDto> collect = orders.stream()
+                //.map(o -> new OrderDto(o))
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
+
+        return collect;
+    }
+
+
     @Getter
     static class OrderDto{
         private Long orderId;
