@@ -104,15 +104,26 @@ public class OrderRepository {
 
         return query.getResultList();
     }
-    public List<Order> findAllWithMemberDelivery(OrderSearch orderSearch) {
+    public List<Order> findAllWithMemberDelivery() {
         return em.createQuery("select o from Order o"+
                         " join fetch o.member m"+
                         " join fetch o.delivery d", Order.class
                         ).getResultList();
     }
 
+    //ToOne 관계는 페이징처리를 해도 상관없다. (row 수 변화가 없기 때문에)
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery("select o from Order o"+
+                " join fetch o.member m"+
+                " join fetch o.delivery d", Order.class
+                ).setFirstResult(offset)
+                 .setMaxResults(limit)
+                 .getResultList();
+    }
+
     // 카디션의 곱만큼 결과가 나오므로 member 1 : orderItem  4개인 경우 결과는 4줄이 나옴
-    // 1:N fetch join 사용시 페이징 처리 불가(메모리에서 페이징 처리를 하기때문에 위험)
+    // 1:N (toMany)fetch join 사용시 페이징 처리 불가
+    // (1:n에서 n을 기준으로 row가 생성되며 메모리에서 페이징 처리를 하기때문에 OOM 발생 등 위험)
     // 컬렉션 둘 이상에 페치 조인 사용하면 안됨. 1 * n * m 으로 row가 너무 많아짐
     public List<Order> findAllWithItem() {
         // distinct 키워드를 붙여 Order entity 의 중복을 제거

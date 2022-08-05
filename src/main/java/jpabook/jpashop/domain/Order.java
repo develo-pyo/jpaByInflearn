@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
+import org.springframework.boot.autoconfigure.batch.BatchDataSource;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,6 +29,7 @@ public class Order {
     @JoinColumn(name = "member_id")
     private Member member; // = new proxy member(); 를 넣어둠 (org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterCeptor)
 
+    //@BatchSize(size=100)
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
