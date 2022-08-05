@@ -62,7 +62,7 @@ public class OrderSimpleApiController {
         // N + 1 문제 발생
         // 1(ORDER 조회) + N(2) (member 조회 2번 + delivery 조회 2번) = ORDER 조회 1회 + Order 하위 Member , delivery 조회 각2회 (Order 결과 2건인 경우)
         // 만약 두 Order의 Member 가 동일한 경우, Member 는 영속성 컨텍스트에서 조회하므로 1회만 조회함
-        List<Order> orders = orderRepository.findAllWithMemberDelivery(new OrderSearch());
+        List<Order> orders = orderRepository.findAllWithMemberDelivery();
         List<SimpleOrderDto> all = orders.stream().map(o -> new SimpleOrderDto(o))
                 .collect(Collectors.toList());
         return all;

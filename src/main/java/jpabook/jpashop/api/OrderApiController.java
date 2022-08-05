@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -74,6 +75,22 @@ public class OrderApiController {
                 .collect(Collectors.toList());
 
         return collect;
+    }
+
+    // jpa default_batch_fetch_size 설정을 하여 1:n:m 을 1:1:1 로 만들어 줌
+    // (IN 조건에 fetch_size 설정값 만큼 값을 넣어 조회)
+    // default_batch_fetch_size 는 global 설정.
+    // @BatchSize(size=?) 사용하여 Entity 별로 fetch size 지정 가능 (보통 default_batch_fetch_size 사용)
+    // * @BatchSize 는 OneToMany Collection 에 붙여준다.
+    // * OrderItem <> Item 과 같은 관계는 Item 에 @BatchSize 를 붙여준다
+    @GetMapping("/api/v3.1/orders")
+    public List<OrderDto> ordersV3_page(@RequestParam(value="offset", defaultValue = "0") int offset,
+                                        @RequestParam(value="limit", defaultValue = "100") int limit){
+        List<Order> orders = orderRepository.findAllWithMemberDelivery(offset, limit);
+        List<OrderDto> result = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+        return result;
     }
 
 
