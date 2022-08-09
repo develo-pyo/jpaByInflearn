@@ -1,10 +1,9 @@
 ## jpaByInflearn  
 ### jpa 기초 공부  
+### https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
 
-**[JPA 에서의 entity 매핑 : 1:n , n:1, n:m, 1:1]**  
-
+**[JPA 에서의 entity 매핑 : 1:n , n:1, n:m, 1:1]**
 @Entity 테이블에 필수  
-
 1. n:m  
 ```JAVA
 @ManyToMany //다대다 관계에서 사용. 다대다 관계는 중간 매핑 테이블이 필요하며 실무에서 사용하지 않음.
