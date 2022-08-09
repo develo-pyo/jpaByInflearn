@@ -168,35 +168,72 @@ private OrderStatus status; //주문상태 ORDER, CANCEL
 ```
 
 --------------
-**[쿼리방식 선택 권장 순서]**  
-1.엔티티를 DTO로 변환하는 방법을 선택
-2.필요하면 페치 조인으로 성능 최적화
-3.그래도 안되면 DTO로 직접 조회하는 방법 사용
-4.최후의 방법은 JPA가 제공하는 네이티브SQL이나 스프링JDBCTemplate 사용하여 SQL 직접 작성
+**[쿼리방식 선택 권장 순서]**    
+1.엔티티를 DTO로 변환하는 방법을 선택  
+2.필요하면 페치 조인으로 성능 최적화  
+3.그래도 안되면 DTO로 직접 조회하는 방법 사용  
+4.최후의 방법은 JPA가 제공하는 네이티브SQL이나 스프링JDBCTemplate 사용하여 SQL 직접 작성  
 
 --------------
-**[1+N 문제 해결하기]**
-1. distinct 사용
-: unique 한 값만 가져오게 되어 1+N 문제 해결
-: paging 처리가 불가 (1:n 의 경우 row 가 n 개 나오므로..)
-2. fetch join + @BatchSize(or default_batch_fetch_size) 사용
-: ToOne 관계는 fetch join 사용. (row 수가 증가하지 않으므로)
-: spring.jpa.properties.hibernate.default_batch_fetch_size : 100 ~ 1000 (최대1000개 제한)
-: 내부적으로 IN 조건을 사용하여 ToMany 관계의 Entity 를 한번에 가져옴
-(@BatchSize 를 사용하여 개별적으로 적용 가능)
-
+**[1+N 문제 해결하기]**  
+1. distinct 사용  
+: unique 한 값만 가져오게 되어 1+N 문제 해결  
+: paging 처리가 불가 (1:n 의 경우 row 가 n 개 나오므로..)  
+2. fetch join + @BatchSize(or default_batch_fetch_size) 사용  
+: ToOne 관계는 fetch join 사용. (row 수가 증가하지 않으므로)  
+: spring.jpa.properties.hibernate.default_batch_fetch_size : 100 ~ 1000 (최대1000개 제한)  
+: 내부적으로 IN 조건을 사용하여 ToMany 관계의 Entity 를 한번에 가져옴  
+(@BatchSize 를 사용하여 개별적으로 적용 가능)  
+  
 
 --------------
-**[조회 방식 권장 순서]**
-1. entity 조회 방식으로 우선 접근
-1) fetch join 으로 쿼리 수 최적화 (ToOne 관계 entity 만 fetch join 사용)
-2) 컬렉션 최적화
-- 페이징 필요 (hibernate.default_batch_fetch_size, @BatchSize) 로 최적화
-- 페이징 필요하지 않은 경우 : fetch join 사용 
-2. Entity 조회 방식으로 해결이 안될 경우 DTO 조회 방식 사용 
-3. DTO 조회 방식으로 해결이 안되면 NativeSQL or Spring JdbcTemplate 사용
-* 엔티티 조회 방식은 fetch join 이나 default_batch_fetch_size 등을 사용하여 코드를 거의 수정하지 않고 옵션만 약간 변경해서 다양한 성능 최적화 시도가 가능하나,
-* DTO를 직접 조회하는 방식은 성능을 최적화 하거나 성능 최적화 방식을 변경할 때 코드 수정량이 많아짐
-* Redis 와 같은 캐싱을 사용시 반드시 Entity 대신 DTO를 캐싱해야함
+**[조회 방식 권장 순서]**  
+1. entity 조회 방식으로 우선 접근  
+1) fetch join 으로 쿼리 수 최적화 (ToOne 관계 entity 만 fetch join 사용)  
+2) 컬렉션 최적화  
+- 페이징 필요 (hibernate.default_batch_fetch_size, @BatchSize) 로 최적화  
+- 페이징 필요하지 않은 경우 : fetch join 사용   
+2. Entity 조회 방식으로 해결이 안될 경우 DTO 조회 방식 사용   
+3. DTO 조회 방식으로 해결이 안되면 NativeSQL or Spring JdbcTemplate 사용  
+* 엔티티 조회 방식은 fetch join 이나 default_batch_fetch_size 등을 사용하여 코드를 거의 수정하지 않고 옵션만 약간 변경해서 다양한 성능 최적화 시도가 가능하나,  
+* DTO를 직접 조회하는 방식은 성능을 최적화 하거나 성능 최적화 방식을 변경할 때 코드 수정량이 많아짐  
+* Redis 와 같은 캐싱을 사용시 반드시 Entity 대신 DTO를 캐싱해야함  
+  
+--------------
+**[OSIV 성능 최적화]**  
+Open Session In View : 하이버네이트  
+Open EntityManager In View : JPA (관례상 OSV 라 함)  
+**spring.jpa.open-in-view : true (default)**  
+- 스프링부트 서버 기동시 open-in-view 관련하여 warn 로그가 남음  
+1. open-in-view 가 켜있는 경우(true인 경우) : Transaction 이 끝나도 DB Connection 반환하지 않음    
+- View 랜더링이 끝나야, 혹은 response 가 완전히 끝나야 DB connection 을 반환함  
+(Lazy 로딩은 영속성 컨텍스트가 살아있어야 가능하기 때문에 DB connection 을 유지)  
+- DB Connection 병목을 유발할 수 있다.  
+
+2. open-in-view 가 꺼져있는 경우(false인 경우) : Transaction 이 끝나면 DB Connection 을 반환하여 영속성 컨텍스트도 끝  
+ㄴ 트랜잭션 안에서 지연로딩을 해줘야함  
+ㄴ 트랜잭션 밖에서 지연로딩 시도시 LazyInitializationException ("could not initialize proxy - no Session") 발생  
+ㄴ fetch join 으로 대체  
+ㄴ view template 에서 지연로딩 동작하지 않음  
+ㄴ 별도의 @Service 를 두고 @Transactional(readonly = true) 설정을 한 후,   
+  지연로딩을 해당 Service 안에서 하는 구조로 개발  
+
+**[OSIV true/false 선택]**  
+고객서비스 및 트래픽이 많은 API 는 OSIV 를 끄고, ADMIN 시스템과 같이 트래픽이 크지 않은 시스템은 OSIV 를 켠다  
+
+--------------
+**[Spring-Data-JPA]**
+- org.springframework.boot:spring-boot-starter-data-jpa   
+- Repository interface 에서 extends JPARepository<T, id type> 할 경우 기본적인 CRUD 자동생성
+- 인터페이스만 만들어 개발하면 된다. 구현체는 스프링 데이터 JPA가 애플리케이션 실행시점에 주입해준다.
+```java
+interface  MemberRepository extends JPaRepository<Member, Long> {
+} 
+```
+
+
+
+
+
 
 
