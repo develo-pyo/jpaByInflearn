@@ -231,6 +231,11 @@ interface  MemberRepository extends JPaRepository<Member, Long> {
 ```
 
 
+--------------
+**[QueryDSL]**
+- www.querydsl.com
+- 
+
 
 
 
