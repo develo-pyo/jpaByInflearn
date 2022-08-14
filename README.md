@@ -219,7 +219,7 @@ Open EntityManager In View : JPA (관례상 OSV 라 함)
 
 **[OSIV true/false 선택]**  
 고객서비스 및 트래픽이 많은 API 는 OSIV 를 끄고, ADMIN 시스템과 같이 트래픽이 크지 않은 시스템은 OSIV 를 켠다  
-
+OSIV 를 끄고, 지연로딩을 Service 안에서 하는 구조로 개발
 --------------
 **[Spring-Data-JPA]**
 - org.springframework.boot:spring-boot-starter-data-jpa   
@@ -234,7 +234,9 @@ interface  MemberRepository extends JPaRepository<Member, Long> {
 --------------
 **[QueryDSL]**
 - www.querydsl.com
-- 
+- JPQL 을 java builder pattern 포맷으로 지원
+- 컴파일시에 오타를 잡을 수 있는 장점
+- generated Q file 들은 git .ignore 에서 제외 (빌드시점에만 있으면 되므로 불필요) 
 
 
 

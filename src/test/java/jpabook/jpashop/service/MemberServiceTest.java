@@ -35,7 +35,7 @@ class MemberServiceTest {
 
         //then
         //em.flush(); //영속성 컨텍스트를 DB에 반영
-        Assertions.assertEquals(member, memberRepository.findOne(savedId));
+        //Assertions.assertEquals(member, memberRepository.findOne(savedId));
     }
 
 //    junit4 에선 @Test(expected ) 속성 사용 가능
