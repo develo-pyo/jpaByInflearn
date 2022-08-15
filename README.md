@@ -98,6 +98,9 @@ builder 패턴 생성
 @DiscriminatorValue("B")  
 : 상속하는 자식 Entity 에 붙여줌 
 
+SINGLE_TABLE 사용시 null 을 포함하게 되며 정규화가 제대로 되지 않을 가능성이 높아  
+일반적으로 JOINED 사용
+
 ```java
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)   //JOINED, SINGLE_TABLE:한곳에여러개넣기(default), TABLE_PER_CLASS
 @DiscriminatorColumn(name="dtype") // 구분필드
