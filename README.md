@@ -32,6 +32,46 @@ class User {
 4. 1:1  
 @OneToOne
 
+**[ fk 관리 ]**  
+연관관계의 주인은 외래키를 관리하는 엔티티. (1:N 에서 N 쪽에 외래키를 갖는다)    
+연관관계의 주인만이 데이터베이스 연관 관계와 매핑되고 외래키를 등록/수정/삭제 할 수 있다.   
+주인이 아닌 쪽은 읽기만 한다.  
+연관관계의 주인이 아닌 곳에 입력된 값은 외래키에 영향을 주지 않음.  
+-> line 에 station 추가시 line 의 인스턴스 station 에 setLine() 을 호출하여   
+연관관계의 주인인 station 을 통해 연관관계를 맺어줌. 이 때, jvm 에서도 매핑을 해주기 위해 연관관계 편의메소드를 사용
+
+```JAVA
+@Entity
+public class Line {
+    @OneToMany(mappedBy="line")
+    List<Station> stations;
+    
+    //연관관계 편의메소드
+    void addStation(Station station) {
+        stations.add(station);
+        station.setLine(this);
+    }
+}
+
+@Entity
+public class Station {
+    @ManyToOne
+    Line line;
+    
+    //연관관계 편의메소드
+    void setLine(final Line line){
+        this.line = line;
+        if(!line.getStations().contains(this)) {
+            line.getStations().add(this);
+        }
+    }
+}
+```
+ex)  
+지하철역 Station N : 지하철노선 Line 1 관계일 때
+연관관계의 주인은 Station 이며
+: 연관관계 편의 메소드
+
 ------------------------------------------------------------------------------------------------------------------------------
 **[@Embeddable , @Embedded]**  
 - @Embeddable 은 타 테이블에 삽입되는 클래스에 붙여줌 (@Entity 아님)   
@@ -233,6 +273,22 @@ interface  MemberRepository extends JPaRepository<Member, Long> {
 } 
 ```
 
+
+--------------
+entity  
+@GeneratedValue 선언시   
+id 생성을 데이터베이스에 위임하게되므로 영속화(persist) 시점에 insert 쿼리가 수행된다.  
+https://gmlwjd9405.github.io/2019/08/12/primary-key-mapping.html  
+
+--------------
+save() 동작방식
+* 새로운 객체인 경우 persist 수행
+* 새로운 객체가 아니면 merge 수행
+- Id 값이 존재하는 객체의 경우 DB에 존재하는 데이터로 간주하여 merge 수행하며 merge 수행시 update 할 항목이 있는지 확인하기 위해    
+select가 먼저 수행하게 되어 성능에 문제가 생길 수 있음.
+
+
+https://kapentaz.github.io/jpa/Spring-Data-JPA%EC%97%90%EC%84%9C-insert-%EC%A0%84%EC%97%90-select-%ED%95%98%EB%8A%94-%EC%9D%B4%EC%9C%A0/#
 
 --------------
 **[QueryDSL]**
