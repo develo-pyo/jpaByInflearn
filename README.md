@@ -2,6 +2,7 @@
 ### jpa 기초 공부  
 ### https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
 
+**연관관계 매핑과 영속성 컨텍스트**
 **[JPA 에서의 entity 매핑 : 1:n , n:1, n:m, 1:1]**
 @Entity 테이블에 필수  
 1. n:m  
@@ -71,6 +72,22 @@ ex)
 지하철역 Station N : 지하철노선 Line 1 관계일 때
 연관관계의 주인은 Station 이며
 : 연관관계 편의 메소드
+
+**[save 동작방식]**
+- 새로운 데이터라고 인식하는 경우 persist (insert) 수행  
+- 기존에 존재하는 데이터라고 인식할 경우 merge (데이터 변경여부 확인하기 위해 select 쿼리 호출 이후 변화 있을 경우 update) 수행
+- 
+**[언제 new 로 판단하는가?]** 
+1) 새로운 객체의 기준은 식별자(@Id) 가 null or 0 일 경우 new 상태로 인식  
+  Primitive 타입의 식별자의 경우 new 상태로 인식. (Long 과같은 Wrapper 인 경우 null 을 newState로 인식)
+2) @Version 필드가 null 인 경우 new 로 간주 (version property 가 존재하고 다른 값을 가지고 있다면 new 가 아님)
+- @Version 이 들어가면 isNew 내부에서 @Id 를 newState 의 기준으로 사용하지 않음.
+  @Version은 entity에 lock 을 잡고자 할 때 사용
+- 
+**[new 상태를 컨트롤 하고싶다면?]**  
+1) entity 에서 Persistable interface 를 구현하여 isNew 를 오버라이딩 하고 리턴(boolean) 값을 정의
+2) EntityInformation을 커스터마이징  
+https://velog.io/@rainmaker007/spring-data-jpa-save-%EB%8F%99%EC%9E%91-%EC%9B%90%EB%A6%AC
 
 ------------------------------------------------------------------------------------------------------------------------------
 **[@Embeddable , @Embedded]**  
@@ -178,7 +195,7 @@ LAZY : 연관관계에 있는 데이터를 지연 로딩
 Item item = itemRepository.findOne(itemId);  
 item.setPrice(1000);  
 itemRepository.save() //불필요  
-=>영속성 엔티티의 변경분은 하이버네이트가 변화를 감지하여 update 및 @Transactional 에 의해 커밋  
+=>영속성 엔티티의 변경분은 하이버네이트가 변화를 감지(snapshot을 통해)하여 update 및 @Transactional 에 의해 커밋  
 
 2.준영속 엔티티 : JPA 에 의해 관리되지 않는 엔티티  
 Item item = new Book();  
